@@ -8,8 +8,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 
 
-
-
 def scrape():
 
 
@@ -39,16 +37,14 @@ def scrape():
     soup_image = bs(browser.html, 'html.parser')
 
     featured_image = soup_image.find_all('img', class_='headerimage')
-    # featured_image_url_href = featured_image[0]['src']
     featured_image_url = 'https://spaceimages-mars.com/image/featured/mars3.jpg'
 
     mars['featured_image_url'] = featured_image_url
 
-    # browser.quit()
-
     mars_facts_url = 'https://galaxyfacts-mars.com/'
 
     tables = pd.read_html(mars_facts_url)
+    print(tables)
     mars_earth_df = tables[0]
     mars_earth_df.columns = mars_earth_df.iloc[0]
     mars_earth_df['Mars - Earth Comparison'] = mars_earth_df['Mars - Earth Comparison'].str.replace(
@@ -56,14 +52,9 @@ def scrape():
     mars_earth_df.set_index('Mars - Earth Comparison', inplace=True)
     mars_earth_df.index.name = None
 
-    
-    mars_table = mars_earth_df.to_html('mars_table.html')
-    # mars_table = mars_table.replace('\n', '')
+    mars_table = mars_earth_df.to_html(classes='table table-striped')
 
     mars['mars_table'] = mars_table
-
-    # executable_path = {'executable_path': ChromeDriverManager().install()}
-    # browser = Browser('chrome', **executable_path, headless=False)
 
     hemispheres_url = 'https://marshemispheres.com/'
     browser.visit(hemispheres_url)
@@ -78,7 +69,6 @@ def scrape():
     urls = []
     titles = []
     full_image_urls = []
-
 
     for item in items:
         if item.find('h3'):
